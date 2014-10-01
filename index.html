@@ -1,0 +1,30 @@
+<!doctype html>
+<html ng-app="toDo">
+<head>
+	<meta charset="utf-8">
+	<title>TODO project</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link media="all" rel="stylesheet" href="css/all.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+	<script src="js/main.js"></script>
+</head>
+<body>
+	<div class="box" ng-controller="toDoCtrl">
+		<form class="taskForm" name="toDoForm" ng-submit="addTask()">
+			<input placeholder="What needs to be done?" type="text" name="newTask" ng-model="newTask">
+			<button class="btn btn-default" ng-disabled="toDoForm.$invalid">Add Task</button>
+		</form>
+		<ul ng-hide="todos.length == 0" class="list">
+			<li ng-dblclick="editTask()" ng-repeat="todo in todos">
+				<button class="delete" ng-click="deleteTask(todo)">x</button>
+				<input type="checkbox" ng-model="todo.done">
+				<span ng-class="{'done':todo.done}">{{todo.title}}</span>
+			</li>
+		</ul>
+		<div class="status-bar">
+			<button class="btn btn-primary pull-right" ng-click="clearCompleted()">Clear Completed</button>
+			<span class="pull-left" ng-hide="todos.length == 0">{{remainingTasks()}} of {{getTotalTodos()}} remaining</span>
+		</div>
+	</div>
+</body>
+</html>
