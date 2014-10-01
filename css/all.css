@@ -81,6 +81,13 @@ a {
 	display: block;
 	overflow: hidden;
 }
+.btnEdit {
+	font-weight: bold;
+	color: #333;
+	float: right;
+	display: none;
+	margin: -3px 5px;
+}
 .delete {
 	font-weight: bold;
 	color: #333;
@@ -88,5 +95,21 @@ a {
 	display: none;
 	margin: -3px 0;
 }
+.list li:hover .btnEdit,
 .list li:hover .delete {display: block;}
-.status-bar {overflow: hidden;}
+.status-bar {
+	overflow: hidden;
+	min-height: 34px;
+}
+.list .edit {
+	-moz-box-sizing: border-box; 
+    box-sizing: border-box;
+	width: 100%;
+	border: 1px solid #ccc;
+	background: #fff;
+	height: 24px;
+	font: 12px/16px Arial, Helvetica, sans-serif;
+	color: #000;
+	padding: 0 10px;
+	margin: -4px 0;
+}

@@ -6,23 +6,33 @@
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link media="all" rel="stylesheet" href="css/all.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="js/main.js"></script>
 </head>
 <body>
 	<div class="box" ng-controller="toDoCtrl">
 		<form class="taskForm" name="toDoForm" ng-submit="addTask()">
-			<input placeholder="What needs to be done?" type="text" name="newTask" ng-model="newTask">
-			<button class="btn btn-default" ng-disabled="toDoForm.$invalid">Add Task</button>
+			<input placeholder="What needs to be done?" type="text" name="newTask" ng-model="newTask" required>
+			<button class="btn btn-primary" ng-disabled="toDoForm.$invalid">Add Task</button>
 		</form>
+		<div ng-show="isTodo()">
+          <input id="toggle-all" type="checkbox" ng-model="markAll"
+            ng-click="toggleMarkAll()"/>
+          <label for="toggle-all">Mark all as complete</label>
+        </div>
 		<ul ng-hide="todos.length == 0" class="list">
-			<li ng-dblclick="editTask()" ng-repeat="todo in todos">
-				<button class="delete" ng-click="deleteTask(todo)">x</button>
-				<input type="checkbox" ng-model="todo.done">
-				<span ng-class="{'done':todo.done}">{{todo.title}}</span>
+			<li ng-repeat="todo in todos">
+				<button ng-hide="todo.editing" class="delete" ng-click="deleteTask(todo)">x</button>
+				<button ng-hide="todo.editing" class="btnEdit" ng-click="editTask(todo)">e</button>
+				<input ng-hide="todo.editing" type="checkbox" ng-model="todo.done">
+				<span ng-hide="todo.editing" ng-class="{'done':todo.done}">{{todo.title}}</span>
+				<form ng-show="todo.editing" class="editForm" name="editForm" ng-submit="editOnEnter(todo)">
+					<input class="edit" type="text" ng-model="todo.title" required/>
+				</form>
 			</li>
 		</ul>
 		<div class="status-bar">
-			<button class="btn btn-primary pull-right" ng-click="clearCompleted()">Clear Completed</button>
+			<button class="btn btn-primary pull-right" ng-show="hasDone()" ng-click="clearCompleted()">Clear Completed</button>
 			<span class="pull-left" ng-hide="todos.length == 0">{{remainingTasks()}} of {{getTotalTodos()}} remaining</span>
 		</div>
 	</div>
