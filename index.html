@@ -88,6 +88,13 @@
 			display: block;
 			overflow: hidden;
 		}
+		.btnEdit {
+			font-weight: bold;
+			color: #333;
+			float: right;
+			display: none;
+			margin: -3px 5px;
+		}
 		.delete {
 			font-weight: bold;
 			color: #333;
@@ -95,14 +102,31 @@
 			display: none;
 			margin: -3px 0;
 		}
+		.list li:hover .btnEdit,
 		.list li:hover .delete {display: block;}
-		.status-bar {overflow: hidden;}
+		.status-bar {
+			overflow: hidden;
+			min-height: 34px;
+		}
+		.list .edit {
+			-moz-box-sizing: border-box; 
+		    box-sizing: border-box;
+			width: 100%;
+			border: 1px solid #ccc;
+			background: #fff;
+			height: 24px;
+			font: 12px/16px Arial, Helvetica, sans-serif;
+			color: #000;
+			padding: 0 10px;
+			margin: -4px 0;
+		}
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
 	<script>
 		angular.module('toDo', []).
 		controller('toDoCtrl', ['$scope', function ($scope) {
 			$scope.todos = [];
+			$scope.markAll = false;
 			$scope.saved = localStorage.getItem('todos');
 			$scope.todos = (localStorage.getItem('todos')!==null) ? JSON.parse($scope.saved) : [];
 			localStorage.setItem('todos', JSON.stringify($scope.todos));
@@ -111,14 +135,26 @@
 		    	return $scope.todos.length;
 		  	}
 		
+			$scope.toggleMarkAll = function() {
+		      angular.forEach($scope.todos, function(todo) {
+		        todo.done = $scope.markAll;
+		      });
+			};
+		
 			$scope.addTask = function () {
 				$scope.todos.push({
 					'title': $scope.newTask,
-					'done': false
+					'done': false,
+					'editing': false
 				});
 				$scope.newTask = '';
 				localStorage.setItem('todos', JSON.stringify($scope.todos));
 			}
+		
+			$scope.isTodo = function(){
+		      return $scope.todos.length > 0;  
+			}
+		
 			$scope.remainingTasks = function() {
 				var count = 0;
 				angular.forEach($scope.todos, function(todo){
@@ -126,12 +162,36 @@
 				});
 				return count;
 			};
+		
+			$scope.editOnEnter = function(todo){
+		      	$scope.editTask(todo);
+			};
+		
+			$scope.editTask = function(todo){
+		      todo.editing = !todo.editing;
+			};
+		
 			$scope.clearCompleted = function () {
 				$scope.todos = $scope.todos.filter(function (todo) {
 					return !todo.done;
 				});
+				$scope.markAll = false;
 				localStorage.setItem('todos', JSON.stringify($scope.todos));
 			}
+		
+			$scope.remaining = function() {
+			    var count = 0;
+			    angular.forEach($scope.todos, function(todo) {
+			      count += todo.done ? 0 : 1;
+			    });
+			    return count;
+			};
+		
+			$scope.hasDone = function() {
+		      return ($scope.todos.length != $scope.remaining());
+			}
+		
+		
 			$scope.deleteTask = function(todo) {
 				$scope.todos.splice($scope.todos.indexOf(todo), 1);
 				localStorage.setItem('todos', JSON.stringify($scope.todos));
